@@ -5,6 +5,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import com.example.springjpapostgresqlsecurity.dtos.convertes.toOutput
 import com.example.springjpapostgresqlsecurity.dtos.outputs.AppUserOutput
+import com.example.springjpapostgresqlsecurity.entities.AppUserEntity
 import com.example.springjpapostgresqlsecurity.repositories.AppUserRepository
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -43,5 +44,18 @@ class AppUserController  (val appUserRepo : AppUserRepository) {
                     UsernameNotFoundException("User not found with id: $id")
                 }
     }
-    }
+
+    @PostMapping("byId2")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    fun appUserByIdWithPost2(@RequestBody bodyWithUUID: Map<String, Any>): AppUserEntity {
+
+        val id = UUID.fromString(bodyWithUUID.get("id") as String)
+
+        return appUserRepo.findById(UUID.fromString(bodyWithUUID.get("id") as String))
+                .orElseThrow {
+                    UsernameNotFoundException("User not found with id: $id")
+                }
+
+
+    }}
 
